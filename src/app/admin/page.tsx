@@ -4,6 +4,7 @@ import { db, users, upscaleJobs } from "@/lib/db";
 import { desc } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ResetBtn } from "@/components/admin/ResetBtn";
 import Link from "next/link";
 
 const ADMIN_EMAIL = "elaine20230910@gmail.com";
@@ -85,7 +86,7 @@ export default async function AdminPage() {
                   </td>
                   <td className="p-3 text-muted-foreground">{u.email}</td>
                   <td className="p-3 capitalize">{u.plan}</td>
-                  <td className="p-3">{u.creditsUsed}/{u.monthlyCredits}</td>
+                  <td className="p-3">{u.creditsUsed}/{u.monthlyCredits} <ResetBtn userId={u.id} /></td>
                   <td className="p-3 text-muted-foreground">
                     {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : ""}
                   </td>
