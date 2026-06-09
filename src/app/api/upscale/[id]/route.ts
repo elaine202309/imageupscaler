@@ -58,6 +58,12 @@ export async function GET(
         const { status, result } = await checkStatus(falReqId);
 
         if (status === "COMPLETED" && result?.image?.url) {
+          // Save result to DB
+          try {
+            await db.update(upscaleJobs)
+              .set({ status: "completed", resultUrl: result.image.url, completedAt: new Date() })
+              .where(eq(upscaleJobs.replicatePredictionId, falReqId));
+          } catch { /* ignore DB errors */ }
           return NextResponse.json({ status: "completed", resultUrl: result.image.url });
         }
 
