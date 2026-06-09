@@ -280,14 +280,14 @@ export default function HomePage() {
         <div className="container mx-auto max-w-2xl">
           <h2 className="text-3xl font-bold text-center mb-10">Frequently Asked Questions</h2>
           <div className="space-y-3">
-            <FaqItem q="What is ImageUpscaler?" a="ImageUpscaler uses AI to upscale low-resolution images by 2x, 3x, or 4x. Just upload, choose your factor, and our AI handles the rest." />
-            <FaqItem q="Is it really free?" a="Yes! Sign in with Google to get 5 free credits every month. A 2x upscale uses 1 credit. Need more? Upgrade to Plus or Pro." />
-            <FaqItem q="What image formats are supported?" a="PNG, JPG, JPEG, WEBP, and HEIC. Maximum file size is 25MB." />
-            <FaqItem q="How long does upscaling take?" a="Most images process in 10–30 seconds. Larger images or 4x upscales may take slightly longer." />
-            <FaqItem q="Are my images stored?" a="Uploaded images are automatically deleted within 30 days. We do not use your images for training or share them with third parties." />
-            <FaqItem q="What upscale factor should I choose?" a="2x is great for social media and web use. 3x works well for presentations. 4x is ideal for prints and large displays." />
-            <FaqItem q="Can I use upscaled images commercially?" a="Yes! The upscaled images are yours. We claim no ownership over your content." />
-            <FaqItem q="How do I cancel my subscription?" a="You can cancel anytime from your account settings. Your credits remain until the end of your billing period." />
+            <FaqItem q="What is ImageUpscaler?" a="ImageUpscaler uses AI to enlarge and enhance your images. Choose from 2x, 3x, or 4x upscaling — our AI adds detail and sharpens the result automatically." />
+            <FaqItem q="How is this different from just resizing in Photoshop?" a="Regular resizing just stretches pixels, making images look blurry. Our AI model analyzes your image and generates new detail — edges become sharper, textures look natural, and artifacts disappear." />
+            <FaqItem q="What image formats and file sizes do you support?" a="We support PNG, JPG, JPEG, WEBP, and HEIC formats, up to 25MB per file." />
+            <FaqItem q="How long does it take?" a="Most images are ready in 10 to 30 seconds, depending on the file size and upscale factor." />
+            <FaqItem q="Which factor should I choose?" a="2x is great for social media. 3x works well for presentations and product photos. 4x is best for prints and large displays where every detail matters." />
+            <FaqItem q="Can I use the upscaled images for commercial projects?" a="Absolutely. The results belong to you — use them for clients, products, prints, or anything you like." />
+            <FaqItem q="Do you keep my images?" a="No. Images are automatically deleted within 30 days after processing. We don't use them for AI training or share them with anyone." />
+            <FaqItem q="How do credits work?" a="2x upscale = 1 credit, 3x = 2 credits, 4x = 5 credits. Sign in for 5 free credits every month. Need more? Check out our affordable plans." />
           </div>
         </div>
       </section>

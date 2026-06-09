@@ -68,13 +68,13 @@ export default function PricingPage() {
         <div className="max-w-2xl mx-auto">
           <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
           <div className="space-y-3">
-            <FaqItem q="Can I get a refund?" a="Yes. If you're not satisfied with your purchase, contact us within 7 days for a full refund. Unused credits from credit packs are fully refundable within 30 days. Monthly subscriptions can be cancelled anytime — you'll keep access until the end of your billing period." />
-            <FaqItem q="Do unused credits roll over?" a="Monthly credits reset on the 1st of each month and do not roll over. One-time credit pack credits never expire." />
-            <FaqItem q="Can I cancel my subscription?" a="Absolutely. Cancel anytime with one click from your account. Your subscription remains active until the end of your current billing period — no partial refunds for remaining days." />
-            <FaqItem q="What payment methods do you accept?" a="We accept all major credit and debit cards via Stripe. More payment options coming soon." />
-            <FaqItem q="Can I upgrade or downgrade my plan?" a="Yes! Upgrade anytime — the price difference is prorated. Downgrade takes effect at the end of your current billing cycle." />
-            <FaqItem q="Is there a free trial?" a="Yes! Sign in with Google to get 5 free credits every month. No credit card required." />
-            <FaqItem q="What happens if I exceed my credits?" a="You won't be charged automatically. Simply buy a one-time credit pack or upgrade your plan to continue upscaling." />
+            <FaqItem q="Do I need to sign up to use the service?" a="You can explore the site without signing up, but a Google account is required to upscale images. Signing up gives you 5 free credits every month — no credit card needed." />
+            <FaqItem q="What happens to unused credits at the end of the month?" a="Free monthly credits reset on the 1st and don't carry over. One-time credit packs never expire, so you can use them whenever you need." />
+            <FaqItem q="Will I be charged when my free credits run out?" a="No. We never charge you without permission. When credits run low, you can choose to buy a credit pack or upgrade — but only if you want to." />
+            <FaqItem q="Can I get a refund?" a="Yes. If you're not happy with your purchase, email us within 7 days for a full refund. Unused credit pack credits are refundable within 30 days. Subscriptions can be cancelled anytime — you'll keep access until the period ends." />
+            <FaqItem q="What if I use up all my credits?" a="You can top up with a one-time credit pack starting at $3 for 20 credits, or upgrade to a plan with more monthly credits. There's no auto-charge — you stay in control." />
+            <FaqItem q="Can I upgrade or downgrade later?" a="Yes. Upgrade anytime and pay only the difference. Want to downgrade? No problem — it takes effect at the end of your current billing cycle." />
+            <FaqItem q="Where do my images go after processing?" a="Uploaded and processed images are automatically deleted within 30 days. You can request earlier deletion anytime. We never use your images for training or share them with anyone." />
           </div>
         </div>
       </div>
