@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { useSession, signIn } from "next-auth/react";
 import { DropZone } from "@/components/upload/DropZone";
 import { ImagePreview } from "@/components/upload/ImagePreview";
 import { BeforeAfter } from "@/components/upload/BeforeAfter";
@@ -17,6 +18,7 @@ import type { PricingPlan } from "@/types";
 type Step = "upload" | "options" | "processing" | "result" | "error";
 
 export default function HomePage() {
+  const { data: session } = useSession();
   const [step, setStep] = useState<Step>("upload");
   const [file, setFile] = useState<File | null>(null);
   const [originalUrl, setOriginalUrl] = useState<string | null>(null);
@@ -140,7 +142,18 @@ export default function HomePage() {
           )}
 
           <div id="upscale-section">
-            {step === "upload" && !file && <DropZone onFileSelect={handleFileSelect} />}
+            {step === "upload" && !file && !session && (
+              <div className="text-center">
+                <DropZone onFileSelect={handleFileSelect} disabled />
+                <p className="mt-4 text-muted-foreground">
+                  <button onClick={() => signIn("google", { callbackUrl: "/" })} className="text-primary font-semibold hover:underline">
+                    Sign in with Google
+                  </button>
+                  {" "}to get <span className="font-semibold">5 free credits</span> and start upscaling
+                </p>
+              </div>
+            )}
+            {step === "upload" && !file && session && <DropZone onFileSelect={handleFileSelect} />}
 
             {step === "upload" && file && (
               <div className="rounded-2xl glass p-6">
