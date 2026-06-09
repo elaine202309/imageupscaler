@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     const ext = file.name.split(".").pop() || "png";
     const filename = `uploads/${uuidv4()}.${ext}`;
 
-    const blob = await put(filename, file);
+    const blob = await put(filename, file, { access: "public" });
 
     return NextResponse.json({
       url: blob.url,
