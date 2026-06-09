@@ -32,20 +32,24 @@ export default function HomePage() {
     setFile(f);
     setError(null);
     setQuotaError(null);
-    // Show preview immediately from local blob
-    setOriginalUrl(URL.createObjectURL(f));
+    // Show preview from local blob
+    const blobUrl = URL.createObjectURL(f);
+    setOriginalUrl(blobUrl);
     setStep("options");
-    // Upload to server in background
+    // Upload to server — must succeed before upscale
     try {
       const formData = new FormData();
       formData.append("file", f);
       const res = await fetch("/api/upload", { method: "POST", body: formData });
-      if (res.ok) {
-        const { url } = await res.json();
-        setOriginalUrl(url);
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Upload failed");
       }
-    } catch {
-      // Keep using local blob URL if upload fails
+      const { url } = await res.json();
+      setOriginalUrl(url); // server URL that fal.ai can access
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed — please try again");
+      setStep("upload");
     }
   }, []);
 
