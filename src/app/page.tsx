@@ -123,9 +123,6 @@ export default function HomePage() {
         <div className="container mx-auto max-w-4xl px-4 pt-20 pb-12 relative z-10">
           {step === "upload" && !file && (
             <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-sm font-medium text-primary mb-6 animate-pulse-glow">
-                <SparkleIcon className="w-4 h-4" /> Powered by SeedVR2 AI
-              </div>
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4 leading-tight">
                 Upscale Images with <span className="gradient-text">AI Magic</span>
               </h1>

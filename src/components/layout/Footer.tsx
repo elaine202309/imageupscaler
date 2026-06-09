@@ -26,6 +26,9 @@ export function Footer() {
             &copy; {new Date().getFullYear()} ImageUpscaler
           </p>
         </div>
+        <p className="text-center text-xs text-muted-foreground/60 pb-4">
+          Powered by SeedVR2 AI
+        </p>
       </div>
     </footer>
   );
