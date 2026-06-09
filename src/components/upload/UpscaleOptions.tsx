@@ -3,7 +3,7 @@
 import type { Plan } from "@/types";
 import { cn } from "@/lib/utils";
 
-export type TargetResolution = "HD" | "2K" | "4K";
+export type TargetResolution = "2x" | "3x" | "4x";
 
 interface UpscaleOptionsProps {
   selected: TargetResolution | null;
@@ -19,9 +19,9 @@ const options: {
   credits: number;
   minPlan: Plan;
 }[] = [
-  { target: "HD", label: "HD", desc: "2× your image size", credits: 1, minPlan: "free" },
-  { target: "2K", label: "2K", desc: "3× your image size", credits: 2, minPlan: "free" },
-  { target: "4K", label: "4K", desc: "4× your image size", credits: 5, minPlan: "plus" },
+  { target: "2x", label: "2x", desc: "Double your image size", credits: 1, minPlan: "free" },
+  { target: "3x", label: "3x", desc: "Triple your image size", credits: 2, minPlan: "free" },
+  { target: "4x", label: "4x", desc: "Quadruple your image size", credits: 5, minPlan: "plus" },
 ];
 
 export function UpscaleOptions({

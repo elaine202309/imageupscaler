@@ -249,7 +249,7 @@ export default function HomePage() {
             <FeatureCard icon={<BrainIcon />} title="AI-Powered Engine" description="AI model reconstructs details and sharpens edges with stunning accuracy." />
             <FeatureCard icon={<LightningIcon />} title="Lightning Fast" description="Cloud GPU delivers upscaled images in seconds." />
             <FeatureCard icon={<ShieldIcon />} title="Privacy Protected" description="Images auto-deleted. We never share or train on your data." />
-            <FeatureCard icon={<ScaleIcon />} title="HD · 2K · 4K" description="Choose your target resolution. We handle the rest." />
+            <FeatureCard icon={<ScaleIcon />} title="2x · 3x · 4x" description="Choose your upscale factor. We handle the rest." />
             <FeatureCard icon={<FormatIcon />} title="All Major Formats" description="PNG, JPG, JPEG, WEBP, HEIC — drag and drop." />
             <FeatureCard icon={<FreeIcon />} title="Free Every Month" description="5 free credits monthly. No credit card needed." />
           </div>

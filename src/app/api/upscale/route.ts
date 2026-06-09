@@ -16,8 +16,8 @@ export async function POST(request: NextRequest) {
     if (!originalUrl || typeof originalUrl !== "string") {
       return NextResponse.json({ error: "originalUrl is required." }, { status: 400 });
     }
-    if (!["HD", "2K", "4K"].includes(target)) {
-      return NextResponse.json({ error: "target must be HD, 2K, or 4K." }, { status: 400 });
+    if (!["2x", "3x", "4x"].includes(target)) {
+      return NextResponse.json({ error: "target must be 2x, 3x, or 4x." }, { status: 400 });
     }
 
     // Get user session

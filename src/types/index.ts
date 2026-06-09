@@ -64,7 +64,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     hasAds: true,
     features: [
       "5 credits / month",
-      "Up to 1080p",
+      "2x upscaling",
       "Max 25MB upload",
       "Standard processing",
     ],
@@ -78,7 +78,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     hasAds: false,
     features: [
       "100 credits / month",
-      "Up to 4K",
+      "Up to 4x",
       "Max 50MB upload",
       "Priority processing",
     ],
@@ -93,7 +93,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     hasAds: false,
     features: [
       "300 credits / month",
-      "Up to 4K",
+      "Up to 4x",
       "Max 100MB upload",
       "Fastest processing",
       "Batch upscale",

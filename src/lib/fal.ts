@@ -54,11 +54,11 @@ interface QueueStatus {
 // Public API
 // ============================================================
 
-// Factor mapping: our labels → scale factor
+// Factor mapping: labels → scale factor
 const FACTOR_MAP: Record<string, number> = {
-  HD: 2,
-  "2K": 3,
-  "4K": 4,
+  "2x": 2,
+  "3x": 3,
+  "4x": 4,
 };
 
 /**
@@ -77,7 +77,7 @@ export async function submitUpscaleByTarget(
 
   const factor = FACTOR_MAP[targetLabel];
   if (!factor) {
-    throw new Error(`Unknown target: ${targetLabel}. Use HD, 2K, or 4K.`);
+    throw new Error(`Unknown target: ${targetLabel}. Use 2x, 3x, or 4x.`);
   }
 
   const input: FalUpscaleInput = {
