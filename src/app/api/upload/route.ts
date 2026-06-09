@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
-import sharp from "sharp";
 import { validateFile } from "@/lib/storage";
 import { auth } from "@/lib/auth";
 import { v4 as uuidv4 } from "uuid";
@@ -24,24 +23,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
-    let buffer = Buffer.from(await file.arrayBuffer());
-    let uploadFilename = file.name;
-
-    // Convert HEIC to PNG for fal.ai compatibility
-    if (file.type === "image/heic" || file.type === "image/heif" || file.name.toLowerCase().endsWith(".heic") || file.name.toLowerCase().endsWith(".heif")) {
-      buffer = await sharp(buffer).png().toBuffer();
-      uploadFilename = file.name.replace(/\.(heic|heif)$/i, ".png");
-    }
-
-    const ext = uploadFilename.split(".").pop() || "png";
+    const ext = file.name.split(".").pop() || "png";
     const filename = `uploads/${uuidv4()}.${ext}`;
 
-    const blob = await put(filename, new Blob([buffer], { type: "image/png" }), { access: "public" });
+    const blob = await put(filename, file, { access: "public" });
 
     return NextResponse.json({
       url: blob.url,
-      size: buffer.length,
-      name: uploadFilename,
+      size: file.size,
+      name: file.name,
     });
   } catch (error) {
     console.error("Upload error:", error);

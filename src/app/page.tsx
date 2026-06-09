@@ -250,7 +250,7 @@ export default function HomePage() {
             <FeatureCard icon={<LightningIcon />} title="Lightning Fast" description="Cloud GPU delivers upscaled images in seconds." />
             <FeatureCard icon={<ShieldIcon />} title="Privacy Protected" description="Images auto-deleted. We never share or train on your data." />
             <FeatureCard icon={<ScaleIcon />} title="2x · 3x · 4x" description="Choose your upscale factor. We handle the rest." />
-            <FeatureCard icon={<FormatIcon />} title="All Major Formats" description="PNG, JPG, JPEG, WEBP, HEIC — drag and drop." />
+            <FeatureCard icon={<FormatIcon />} title="All Major Formats" description="PNG, JPG, JPEG, WEBP — drag and drop." />
             <FeatureCard icon={<FreeIcon />} title="Free Every Month" description="5 free credits monthly. No credit card needed." />
           </div>
         </div>
@@ -282,7 +282,7 @@ export default function HomePage() {
           <div className="space-y-3">
             <FaqItem q="What is ImageUpscaler?" a="ImageUpscaler uses AI to enlarge and enhance your images. Choose from 2x, 3x, or 4x upscaling — our AI adds detail and sharpens the result automatically." />
             <FaqItem q="How is this different from just resizing in Photoshop?" a="Regular resizing just stretches pixels, making images look blurry. Our AI model analyzes your image and generates new detail — edges become sharper, textures look natural, and artifacts disappear." />
-            <FaqItem q="What image formats and file sizes do you support?" a="We support PNG, JPG, JPEG, WEBP, and HEIC formats, up to 25MB per file." />
+            <FaqItem q="What image formats and file sizes do you support?" a="We support PNG, JPG, JPEG, and WEBP formats, up to 25MB per file." />
             <FaqItem q="How long does it take?" a="Most images are ready in 10 to 30 seconds, depending on the file size and upscale factor." />
             <FaqItem q="Which factor should I choose?" a="2x is great for social media. 3x works well for presentations and product photos. 4x is best for prints and large displays where every detail matters." />
             <FaqItem q="Can I use the upscaled images for commercial projects?" a="Absolutely. The results belong to you — use them for clients, products, prints, or anything you like." />
