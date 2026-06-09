@@ -53,11 +53,13 @@ export default function HomePage() {
     }
   }, []);
 
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
   // Start upscale
   const handleUpscale = useCallback(async () => {
     if (!originalUrl || !target) return;
     if (!session) {
-      signIn("google", { callbackUrl: "/" });
+      setShowLoginPrompt(true);
       return;
     }
     setStep("processing");
@@ -171,6 +173,14 @@ export default function HomePage() {
                     </Button>
                     <Button variant="ghost" onClick={resetAll} className="rounded-xl">Cancel</Button>
                   </div>
+                  {showLoginPrompt && (
+                    <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-2xl text-center">
+                      <p className="text-sm font-medium mb-2">Sign in to use your free credits</p>
+                      <button onClick={() => signIn("google", { callbackUrl: "/" })} className="inline-flex items-center gap-2 px-6 py-2 rounded-xl text-white text-sm font-semibold" style={{ background: "var(--gradient-primary)" }}>
+                        Sign in with Google
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
