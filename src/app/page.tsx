@@ -175,7 +175,6 @@ export default function HomePage() {
                       style={{ background: target && !uploading ? "var(--gradient-primary)" : undefined }}>
                       {uploading ? "Uploading..." : `✨ Upscale to ${target || "..."}`}
                     </Button>
-                    <Button variant="ghost" onClick={resetAll} className="rounded-xl">Cancel</Button>
                   </div>
                   {showLoginPrompt && (
                     <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-2xl text-center">
