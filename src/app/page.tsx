@@ -134,7 +134,7 @@ export default function HomePage() {
           {step === "upload" && !file && (
             <div className="text-center mb-12">
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4 leading-tight">
-                Upscale Images with <span className="gradient-text">AI Magic</span>
+                Free AI Image <span className="gradient-text">Upscaler</span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl mx-auto">
                 Transform low-res images into stunning high-definition masterpieces. Free to use — choose your upscale factor, 2x, 3x, or 4x.

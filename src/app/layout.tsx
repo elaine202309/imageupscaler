@@ -17,9 +17,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Image Upscaler — AI-Powered Image Enhancement",
+  title: "Free AI Image Upscaler — Enhance Photos Online",
   description:
-    "Upscale your images with AI. Free to use — enlarge, enhance, and sharpen your photos with state-of-the-art AI models. Supports 2x, 4x, and 8x upscaling.",
+    "Free AI image upscaler. Enlarge and enhance your photos by 2x, 3x, or 4x. No credit card needed. 5 free credits every month.",
   keywords: [
     "image upscaler",
     "AI image enhancement",
