@@ -89,13 +89,13 @@ export async function submitUpscaleByTarget(
   };
 
   try {
+    console.log("[fal.ai] Submitting:", JSON.stringify({ image_url: input.image_url?.slice(0, 60), mode: input.upscale_mode, target: input.target_resolution }));
     const { request_id } = await fal.queue.submit(MODEL_ID, { input });
     return { requestId: request_id };
   } catch (error) {
-    console.error("fal.ai submit error:", error);
-    throw new Error(
-      `fal.ai submission failed: ${error instanceof Error ? error.message : "Unknown error"}`
-    );
+    const e = error as any;
+    console.error("[fal.ai] Submit error:", e?.message || e, e?.body || e?.response?.body || "");
+    throw new Error(`fal.ai: ${e?.message || "Unknown"}`);
   }
 }
 
@@ -121,13 +121,13 @@ export async function submitUpscale(
   };
 
   try {
+    console.log("[fal.ai] Submitting:", JSON.stringify({ image_url: input.image_url?.slice(0, 60), mode: input.upscale_mode, target: input.target_resolution }));
     const { request_id } = await fal.queue.submit(MODEL_ID, { input });
     return { requestId: request_id };
   } catch (error) {
-    console.error("fal.ai submit error:", error);
-    throw new Error(
-      `fal.ai submission failed: ${error instanceof Error ? error.message : "Unknown error"}`
-    );
+    const e = error as any;
+    console.error("[fal.ai] Submit error:", e?.message || e, e?.body || e?.response?.body || "");
+    throw new Error(`fal.ai: ${e?.message || "Unknown"}`);
   }
 }
 

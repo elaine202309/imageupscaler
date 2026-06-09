@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
     let falRequestId: string | null = null;
     let status = "processing";
 
+    console.log("[Upscale] Sending to fal.ai:", { originalUrl, target });
     try {
       const { requestId } = await submitUpscaleByTarget(originalUrl, target);
       falRequestId = requestId;
