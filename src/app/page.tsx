@@ -119,7 +119,7 @@ export default function HomePage() {
   };
 
   const handlePricingSelect = (plan: PricingPlan) => {
-    if (plan.price > 0) alert(`${plan.name} — Stripe checkout in production.`);
+    if (plan.price > 0) alert(`${plan.name} — creem.io checkout in production.`);
   };
 
   return (
