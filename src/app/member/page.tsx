@@ -6,6 +6,7 @@ import { eq, desc } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { DownloadBtn } from "@/components/member/DownloadBtn";
 import Link from "next/link";
 
 export default async function MemberPage() {
@@ -112,7 +113,7 @@ export default async function MemberPage() {
                     {job.createdAt ? new Date(job.createdAt).toLocaleDateString() : ""}
                   </p>
                   {job.resultUrl && (
-                    <a href={job.resultUrl} download className="text-xs text-primary hover:underline mt-1 block">Download →</a>
+                    <DownloadBtn url={job.resultUrl} filename={`upscaled-${job.scaleFactor}x.png`} />
                   )}
                 </div>
               </Card>
