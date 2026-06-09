@@ -48,8 +48,9 @@ export default function HomePage() {
       const { url } = await res.json();
       setOriginalUrl(url); // server URL that fal.ai can access
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed — please try again");
-      setStep("upload");
+      const msg = err instanceof Error ? err.message : "Upload failed";
+      console.warn("Upload error:", msg);
+      // Keep preview and options — user can still try
     }
   }, []);
 
