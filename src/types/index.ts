@@ -100,5 +100,5 @@ export const PRICING_PLANS: PricingPlan[] = [
 
 export const ANONYMOUS_CREDITS = 3;
 export const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
-export const ALLOWED_FORMATS = ["image/png", "image/jpeg", "image/webp"];
-export const ALLOWED_EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp"];
+export const ALLOWED_FORMATS = ["image/png", "image/jpeg", "image/webp", "image/heic", "image/heif"];
+export const ALLOWED_EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp", ".heic", ".heif"];

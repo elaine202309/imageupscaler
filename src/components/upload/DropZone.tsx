@@ -75,7 +75,7 @@ export function DropZone({ onFileSelect, disabled }: DropZoneProps) {
         </div>
 
         <h3 className="text-xl font-semibold mb-2">Drag & drop your image here</h3>
-        <p className="text-sm text-muted-foreground mb-5">or click to browse — PNG, JPG, WEBP up to 25MB</p>
+        <p className="text-sm text-muted-foreground mb-5">or click to browse — PNG, JPG, WEBP, HEIC up to 25MB</p>
 
         <Button variant="outline" type="button" disabled={disabled} className="rounded-xl px-8">
           Choose Image
