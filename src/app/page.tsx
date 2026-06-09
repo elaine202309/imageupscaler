@@ -32,20 +32,20 @@ export default function HomePage() {
     setFile(f);
     setError(null);
     setQuotaError(null);
+    // Show preview immediately from local blob
+    setOriginalUrl(URL.createObjectURL(f));
+    setStep("options");
+    // Upload to server in background
     try {
       const formData = new FormData();
       formData.append("file", f);
       const res = await fetch("/api/upload", { method: "POST", body: formData });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Upload failed");
+      if (res.ok) {
+        const { url } = await res.json();
+        setOriginalUrl(url);
       }
-      const { url } = await res.json();
-      setOriginalUrl(url);
-      setStep("options");
-      document.getElementById("upscale-section")?.scrollIntoView({ behavior: "smooth" });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed");
+    } catch {
+      // Keep using local blob URL if upload fails
     }
   }, []);
 
