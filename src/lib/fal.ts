@@ -63,7 +63,7 @@ const FACTOR_MAP: Record<string, number> = {
 
 /**
  * Submit an upscale job with target resolution.
- * Uses scale factor — gives predictable results (HD=2x, 2K=3x, 4K=4x).
+ * Uses scale factor — gives predictable results (2x=2, 3x=3, 4x=4).
  */
 export async function submitUpscaleByTarget(
   imageUrl: string,

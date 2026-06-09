@@ -137,7 +137,7 @@ export default function HomePage() {
                 Upscale Images with <span className="gradient-text">AI Magic</span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-                Transform low-res images into stunning high-definition masterpieces. Choose your target resolution — up to 4K.
+                Transform low-res images into stunning high-definition masterpieces. Choose your upscale factor — 2x, 3x, or 4x.
               </p>
             </div>
           )}
@@ -167,7 +167,7 @@ export default function HomePage() {
                   <ImagePreview file={file} onRemove={resetAll} imageUrl={originalUrl ?? undefined} />
                 </div>
                 <div className="rounded-2xl glass p-6 space-y-5">
-                  <h2 className="text-xl font-semibold text-center">Choose Target Resolution</h2>
+                  <h2 className="text-xl font-semibold text-center">Choose Upscale Factor</h2>
                   <UpscaleOptions selected={target} onSelect={setTarget} disabled={false} />
                   <div className="flex gap-3 justify-center pt-2">
                     <Button size="lg" onClick={handleUpscale} disabled={!target || uploading}
@@ -261,7 +261,7 @@ export default function HomePage() {
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-2">Choose Your <span className="gradient-text">Plan</span></h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">Credits by resolution: HD=1, 2K=2, 4K=5</p>
+            <p className="text-muted-foreground max-w-xl mx-auto">Credits by upscale: 2x=1, 3x=2, 4x=5</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             {PRICING_PLANS.map((plan) => (<PricingCard key={plan.id} plan={plan} current={false} onSelect={handlePricingSelect} />))}
@@ -280,12 +280,12 @@ export default function HomePage() {
         <div className="container mx-auto max-w-2xl">
           <h2 className="text-3xl font-bold text-center mb-10">Frequently Asked Questions</h2>
           <div className="space-y-3">
-            <FaqItem q="What is ImageUpscaler?" a="ImageUpscaler uses AI to upscale low-resolution images into high-definition versions. Choose your target resolution — HD, 2K, or 4K — and our AI handles the rest." />
-            <FaqItem q="Is it really free?" a="Yes! Sign in with Google to get 5 free credits every month. Each HD upscale uses 1 credit. Need more? Upgrade to Plus or Pro." />
+            <FaqItem q="What is ImageUpscaler?" a="ImageUpscaler uses AI to upscale low-resolution images by 2x, 3x, or 4x. Just upload, choose your factor, and our AI handles the rest." />
+            <FaqItem q="Is it really free?" a="Yes! Sign in with Google to get 5 free credits every month. A 2x upscale uses 1 credit. Need more? Upgrade to Plus or Pro." />
             <FaqItem q="What image formats are supported?" a="PNG, JPG, JPEG, WEBP, and HEIC. Maximum file size is 25MB." />
-            <FaqItem q="How long does upscaling take?" a="Most images process in 10–30 seconds. Larger images or higher target resolutions may take slightly longer." />
+            <FaqItem q="How long does upscaling take?" a="Most images process in 10–30 seconds. Larger images or 4x upscales may take slightly longer." />
             <FaqItem q="Are my images stored?" a="Uploaded images are automatically deleted within 30 days. We do not use your images for training or share them with third parties." />
-            <FaqItem q="What resolution should I choose?" a="HD (1080px long edge) is great for social media and web use. 2K (1440px) works well for presentations. 4K (2160px) is ideal for prints and large displays." />
+            <FaqItem q="What upscale factor should I choose?" a="2x is great for social media and web use. 3x works well for presentations. 4x is ideal for prints and large displays." />
             <FaqItem q="Can I use upscaled images commercially?" a="Yes! The upscaled images are yours. We claim no ownership over your content." />
             <FaqItem q="How do I cancel my subscription?" a="You can cancel anytime from your account settings. Your credits remain until the end of your billing period." />
           </div>
