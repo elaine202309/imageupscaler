@@ -203,13 +203,6 @@ export default function HomePage() {
             )}
           </div>
 
-          {step === "upload" && !file && (
-            <div className="flex flex-wrap justify-center gap-8 mt-14 text-sm text-muted-foreground">
-              <div className="text-center"><div className="text-2xl font-bold text-foreground">1M+</div><div>Images Upscaled</div></div>
-              <div className="text-center"><div className="text-2xl font-bold text-foreground">50K+</div><div>Happy Users</div></div>
-              <div className="text-center"><div className="text-2xl font-bold text-foreground">4.9</div><div>User Rating</div></div>
-            </div>
-          )}
         </div>
         <div className="relative">
           <svg viewBox="0 0 1440 60" fill="var(--background)"><path d="M0 60V30C240 0 480 0 720 15C960 30 1200 45 1440 30V60H0Z" /></svg>
@@ -264,6 +257,23 @@ export default function HomePage() {
             <div className="flex flex-wrap gap-4 justify-center">
               <CreditBadge credits={20} price={3} /><CreditBadge credits={50} price={6} /><CreditBadge credits={100} price={10} />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-16 px-4">
+        <div className="container mx-auto max-w-2xl">
+          <h2 className="text-3xl font-bold text-center mb-10">Frequently Asked Questions</h2>
+          <div className="space-y-3">
+            <FaqItem q="What is ImageUpscaler?" a="ImageUpscaler uses AI (SeedVR2 model) to upscale low-resolution images into high-definition versions. Choose your target resolution — HD, 2K, or 4K — and our AI handles the rest." />
+            <FaqItem q="Is it really free?" a="Yes! Sign in with Google to get 5 free credits every month. Each HD upscale uses 1 credit. Need more? Upgrade to Plus or Pro." />
+            <FaqItem q="What image formats are supported?" a="PNG, JPG, JPEG, WEBP, and HEIC. Maximum file size is 25MB." />
+            <FaqItem q="How long does upscaling take?" a="Most images process in 10–30 seconds. Larger images or higher target resolutions may take slightly longer." />
+            <FaqItem q="Are my images stored?" a="Uploaded images are automatically deleted within 30 days. We do not use your images for training or share them with third parties." />
+            <FaqItem q="What resolution should I choose?" a="HD (1080px long edge) is great for social media and web use. 2K (1440px) works well for presentations. 4K (2160px) is ideal for prints and large displays." />
+            <FaqItem q="Can I use upscaled images commercially?" a="Yes! The upscaled images are yours. We claim no ownership over your content." />
+            <FaqItem q="How do I cancel my subscription?" a="You can cancel anytime from your account settings. Your credits remain until the end of your billing period." />
           </div>
         </div>
       </section>
@@ -341,3 +351,15 @@ function ShieldIcon() { return <svg className="w-6 h-6" fill="none" viewBox="0 0
 function ScaleIcon() { return <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 3v18h18M6 15l3-3 3 3 6-6" /></svg>; }
 function FormatIcon() { return <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>; }
 function FreeIcon() { return <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 9.563C9 9.252 9.252 9 9.563 9h4.874c.311 0 .563.252.563.563v4.874c0 .311-.252.563-.563.563H9.564A.562.562 0 019 14.437V9.564z" /></svg>; }
+
+function FaqItem({ q, a }: { q: string; a: string }) {
+  return (
+    <details className="group rounded-xl glass p-5 cursor-pointer transition-all duration-200 hover:shadow-sm">
+      <summary className="font-medium flex items-center justify-between list-none">
+        {q}
+        <span className="text-muted-foreground group-open:rotate-45 transition-transform duration-200 text-lg">+</span>
+      </summary>
+      <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{a}</p>
+    </details>
+  );
+}
