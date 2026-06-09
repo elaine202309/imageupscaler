@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { eq, desc } from "drizzle-orm";
 import { db, upscaleJobs } from "@/lib/db";
+import { initDB } from "@/lib/db/init";
 import { checkAndDeduct } from "@/lib/quota";
 import { submitUpscaleByTarget, simulateSubmit } from "@/lib/fal";
 import { auth } from "@/lib/auth";
-import { cookies } from "next/headers";
 
 export async function POST(request: NextRequest) {
   try {
+    await initDB();
     const body = await request.json();
     const { originalUrl, target } = body;
     console.log("[Upscale] Request:", { url: originalUrl?.slice(0, 80), target });

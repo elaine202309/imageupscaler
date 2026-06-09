@@ -1,6 +1,7 @@
 import { auth, signOut } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db, users, upscaleJobs } from "@/lib/db";
+import { initDB } from "@/lib/db/init";
 import { eq, desc } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -16,6 +17,7 @@ export default async function MemberPage() {
   let jobs: any[] = [];
 
   try {
+    await initDB();
     const userRows = await db
       .select()
       .from(users)
