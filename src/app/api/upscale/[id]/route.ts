@@ -33,11 +33,10 @@ export async function GET(
         currentStatus = job.status || "processing";
         resultUrl = job.resultUrl;
       }
-    } catch {
-      // DB not set up — id might be the fal request ID itself
-      falReqId = id;
-      currentStatus = "processing";
-    }
+    } catch { /* ignore */ }
+
+    // If not found in DB, use the id directly (frontend passes fal request ID)
+    if (!falReqId) falReqId = id;
 
     // Already done
     if (currentStatus === "completed" && resultUrl) {
