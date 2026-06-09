@@ -49,22 +49,20 @@ export function Header() {
 
           {session?.user ? (
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="rounded-full ring-2 ring-purple-200 hover:ring-purple-400 transition-all">
-                  <Avatar className="w-8 h-8">
-                    <AvatarImage src={session.user.image || ""} />
-                    <AvatarFallback className="text-xs">
-                      {session.user.name?.charAt(0) || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                </button>
+              <DropdownMenuTrigger className="rounded-full ring-2 ring-purple-200 hover:ring-purple-400 transition-all">
+                <Avatar className="w-8 h-8">
+                  <AvatarImage src={session.user.image || ""} />
+                  <AvatarFallback className="text-xs">
+                    {session.user.name?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem asChild>
-                  <Link href="/member">My Account</Link>
+                <DropdownMenuItem>
+                  <Link href="/member" className="w-full">My Account</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/pricing">Upgrade Plan</Link>
+                <DropdownMenuItem>
+                  <Link href="/pricing" className="w-full">Upgrade Plan</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
                   Sign Out
