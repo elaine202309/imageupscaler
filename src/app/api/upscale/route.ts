@@ -4,15 +4,9 @@ import { eq, desc } from "drizzle-orm";
 import { db, upscaleJobs } from "@/lib/db";
 import { checkAndDeduct } from "@/lib/quota";
 import { submitUpscaleByTarget, simulateSubmit } from "@/lib/fal";
+import { auth } from "@/lib/auth";
 import { cookies } from "next/headers";
-import type { ScaleFactor } from "@/types";
 
-/**
- * POST /api/upscale
- *
- * Submit an AI upscale job to fal.ai SeedVR2.
- * Body: { originalUrl: string, target: "HD" | "2K" | "4K" }
- */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -21,19 +15,22 @@ export async function POST(request: NextRequest) {
     if (!originalUrl || typeof originalUrl !== "string") {
       return NextResponse.json({ error: "originalUrl is required." }, { status: 400 });
     }
-
     if (!["HD", "2K", "4K"].includes(target)) {
       return NextResponse.json({ error: "target must be HD, 2K, or 4K." }, { status: 400 });
     }
 
-    const userId = request.headers.get("x-user-id") || null;
-    const anonymousId = await getAnonymousId();
+    // Get user session
+    const session = await auth();
+    const userId = session?.user?.id || null;
 
-    // Check & deduct quota (skip if DB not set up)
+    // Check & deduct quota (requires login)
     try {
-      await checkAndDeduct(userId, anonymousId);
+      await checkAndDeduct(userId, null);
     } catch (quotaError) {
-      console.warn("[DEV] Quota check skipped:", (quotaError as Error).message?.slice(0, 80));
+      return NextResponse.json(
+        { error: quotaError instanceof Error ? quotaError.message : "No credits" },
+        { status: 402 }
+      );
     }
 
     const jobId = uuidv4();
@@ -43,61 +40,55 @@ export async function POST(request: NextRequest) {
     try {
       const { requestId } = await submitUpscaleByTarget(originalUrl, target);
       falRequestId = requestId;
-    } catch (falError) {
-      console.error("fal.ai error:", falError);
+    } catch {
       if (process.env.FAL_KEY) {
         status = "failed";
       } else {
-        console.log("[DEV] Simulating upscale — no FAL_KEY configured");
         const sim = await simulateSubmit(originalUrl, 2);
         falRequestId = sim.requestId;
-        status = "processing";
       }
     }
 
     const now = new Date().toISOString();
-    const job = { id: jobId, userId, anonymousId, originalUrl, resultUrl: null, scaleFactor: 2, status, replicatePredictionId: falRequestId, createdAt: now, completedAt: null };
 
-    // Save to DB (non-blocking if DB not set up)
+    // Save job
     try {
       await db.insert(upscaleJobs).values({
-        id: jobId, userId, anonymousId, originalUrl,
-        scaleFactor: 2 as ScaleFactor, status,
-        replicatePredictionId: falRequestId, createdAt: now,
+        id: jobId,
+        userId,
+        originalUrl,
+        scaleFactor: 2,
+        status,
+        replicatePredictionId: falRequestId,
+        createdAt: new Date(),
       });
-    } catch (dbError) {
-      console.warn("[DEV] DB save skipped:", (dbError as Error).message?.slice(0, 60));
+    } catch (e) {
+      console.warn("Job save skipped:", e);
     }
 
-    return NextResponse.json({ job });
+    return NextResponse.json({
+      job: { id: jobId, userId, originalUrl, resultUrl: null, scaleFactor: 2, status, replicatePredictionId: falRequestId, createdAt: now, completedAt: null },
+    });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
-    console.error("Upscale error:", msg);
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 
-/**
- * GET /api/upscale — list recent jobs
- */
 export async function GET(request: NextRequest) {
   try {
-    const userId = request.headers.get("x-user-id") || null;
-    const anonymousId = await getAnonymousId();
-    if (!userId && !anonymousId) return NextResponse.json({ jobs: [] });
+    const session = await auth();
+    if (!session?.user?.id) return NextResponse.json({ jobs: [] });
 
-    const jobs = userId
-      ? await db.select().from(upscaleJobs).where(eq(upscaleJobs.userId, userId)).orderBy(desc(upscaleJobs.createdAt)).limit(50)
-      : await db.select().from(upscaleJobs).where(eq(upscaleJobs.anonymousId, anonymousId)).orderBy(desc(upscaleJobs.createdAt)).limit(50);
+    const jobs = await db
+      .select()
+      .from(upscaleJobs)
+      .where(eq(upscaleJobs.userId, session.user.id))
+      .orderBy(desc(upscaleJobs.createdAt))
+      .limit(50);
 
     return NextResponse.json({ jobs });
-  } catch (error) {
-    console.error("History error:", error);
-    return NextResponse.json({ error: "Failed to fetch history." }, { status: 500 });
+  } catch {
+    return NextResponse.json({ jobs: [] });
   }
-}
-
-async function getAnonymousId(): Promise<string> {
-  const cookieStore = await cookies();
-  return cookieStore.get("anon_id")?.value || uuidv4();
 }
