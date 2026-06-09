@@ -19,9 +19,9 @@ const options: {
   credits: number;
   minPlan: Plan;
 }[] = [
-  { target: "HD", label: "HD", desc: "Long edge 1080px", credits: 1, minPlan: "free" },
-  { target: "2K", label: "2K", desc: "Long edge 1440px", credits: 2, minPlan: "free" },
-  { target: "4K", label: "4K", desc: "Long edge 2160px", credits: 5, minPlan: "plus" },
+  { target: "HD", label: "HD", desc: "2× your image size", credits: 1, minPlan: "free" },
+  { target: "2K", label: "2K", desc: "3× your image size", credits: 2, minPlan: "free" },
+  { target: "4K", label: "4K", desc: "4× your image size", credits: 5, minPlan: "plus" },
 ];
 
 export function UpscaleOptions({

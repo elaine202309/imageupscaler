@@ -54,16 +54,16 @@ interface QueueStatus {
 // Public API
 // ============================================================
 
-// Resolution mapping: our labels → fal.ai target_resolution
-const RESOLUTION_MAP: Record<string, string> = {
-  HD: "1080p",
-  "2K": "1440p",
-  "4K": "2160p",
+// Factor mapping: our labels → scale factor
+const FACTOR_MAP: Record<string, number> = {
+  HD: 2,
+  "2K": 3,
+  "4K": 4,
 };
 
 /**
- * Submit an upscale job with target resolution (recommended).
- * Accepts "HD", "2K", or "4K" → maps to fal.ai target_resolution.
+ * Submit an upscale job with target resolution.
+ * Uses scale factor — gives predictable results (HD=2x, 2K=3x, 4K=4x).
  */
 export async function submitUpscaleByTarget(
   imageUrl: string,
@@ -75,21 +75,21 @@ export async function submitUpscaleByTarget(
     );
   }
 
-  const targetResolution = RESOLUTION_MAP[targetLabel];
-  if (!targetResolution) {
+  const factor = FACTOR_MAP[targetLabel];
+  if (!factor) {
     throw new Error(`Unknown target: ${targetLabel}. Use HD, 2K, or 4K.`);
   }
 
   const input: FalUpscaleInput = {
     image_url: imageUrl,
-    upscale_mode: "target",
-    target_resolution: targetResolution as "720p" | "1080p" | "1440p" | "2160p",
+    upscale_mode: "factor",
+    upscale_factor: factor,
     output_format: "png",
     noise_scale: 0.05,
   };
 
   try {
-    console.log("[fal.ai] Submitting:", JSON.stringify({ image_url: input.image_url?.slice(0, 60), mode: input.upscale_mode, target: input.target_resolution }));
+    console.log("[fal.ai] Submitting:", JSON.stringify({ image_url: input.image_url?.slice(0, 60), mode: "factor", factor }));
     const { request_id } = await fal.queue.submit(MODEL_ID, { input });
     return { requestId: request_id };
   } catch (error) {
