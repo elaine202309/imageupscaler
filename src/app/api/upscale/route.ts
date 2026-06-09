@@ -11,6 +11,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { originalUrl, target } = body;
+    console.log("[Upscale] Request:", { url: originalUrl?.slice(0, 80), target });
 
     if (!originalUrl || typeof originalUrl !== "string") {
       return NextResponse.json({ error: "originalUrl is required." }, { status: 400 });
@@ -22,6 +23,7 @@ export async function POST(request: NextRequest) {
     // Get user session
     const session = await auth();
     const userId = session?.user?.id || null;
+    console.log("[Upscale] User:", userId);
 
     // Check & deduct quota (requires login)
     try {
@@ -72,6 +74,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
+    console.error("[Upscale] Error:", msg);
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
