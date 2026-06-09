@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Upscaler - AI Image Enhancement</title>
+<style>
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; scroll-behavior: smooth; }
+body { background: #fefcf9; color: #1a1225; line-height: 1.6; overflow-x: hidden; }
+
+/* ============================================================
+   Gradients & Utilities
+   ============================================================ */
+.gradient-text {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 30%, #ec4899 70%, #f97316 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.gradient-bg { background: linear-gradient(135deg, #7c3aed 0%, #a855f7 30%, #ec4899 70%, #f97316 100%); }
+.gradient-hero { background: linear-gradient(160deg, #faf5ff 0%, #fce7f3 30%, #fff7ed 70%, #fef3c7 100%); }
+.gradient-subtle { background: linear-gradient(135deg, #faf5ff 0%, #fff1f2 50%, #fff7ed 100%); }
+.glass {
+  background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.6);
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(1deg); }
+  66% { transform: translateY(-4px) rotate(-1deg); }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(124,58,237,0.15); }
+  50% { box-shadow: 0 0 40px rgba(124,58,237,0.3), 0 0 60px rgba(236,72,153,0.15); }
+}
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+.animate-float-delay { animation: float 6s ease-in-out infinite; animation-delay: 2s; }
+.animate-float-delay2 { animation: float 6s ease-in-out infinite; animation-delay: 4s; }
+
+/* ============================================================
+   Header
+   ============================================================ */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.8); backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.header-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between; height: 64px;
+}
+.logo {
+  display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px;
+  text-decoration: none; color: inherit;
+}
+.logo-icon {
+  width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #7c3aed, #ec4899); color: #fff; font-size: 16px;
+}
+.badge {
+  display: inline-flex; align-items: center; padding: 3px 12px; border-radius: 20px;
+  font-size: 13px; font-weight: 500; border: 1px solid #ede8f2; text-decoration: none; color: #7c3aed;
+  transition: all 0.2s;
+}
+.badge:hover { background: #fdf4ff; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; border-radius: 14px;
+  font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.3s; text-decoration: none;
+}
+.btn-primary { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; box-shadow: 0 4px 15px rgba(124,58,237,0.25); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.35); }
+.btn-outline { background: transparent; border: 2px solid #7c3aed; color: #7c3aed; }
+.btn-outline:hover { background: #7c3aed; color: #fff; }
+.btn-lg { padding: 14px 32px; font-size: 16px; border-radius: 18px; }
+
+/* ============================================================
+   Hero
+   ============================================================ */
+.hero { position: relative; overflow: hidden; padding: 80px 20px 40px; }
+.hero-blob {
+  position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+}
+.hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 10; text-align: center; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 16px; border-radius: 20px;
+  font-size: 14px; font-weight: 500; color: #7c3aed; margin-bottom: 24px;
+  background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.06);
+}
+.hero h1 { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
+.hero p { font-size: 18px; color: #7c6f8a; max-width: 540px; margin: 0 auto 32px; }
+.hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+.hero-stats { display: flex; gap: 48px; justify-content: center; flex-wrap: wrap; font-size: 14px; color: #7c6f8a; }
+.hero-stats strong { display: block; font-size: 28px; color: #1a1225; }
+
+/* ============================================================
+   Drop Zone
+   ============================================================ */
+.dropzone {
+  border: 2px dashed #d4cde0; border-radius: 24px; padding: 60px 20px; text-align: center;
+  cursor: pointer; transition: all 0.3s; max-width: 640px; margin: 0 auto;
+  background: rgba(255,255,255,0.6); backdrop-filter: blur(10px);
+}
+.dropzone:hover, .dropzone.drag-over { border-color: #a855f7; background: rgba(245,243,255,0.8); transform: scale(1.01); }
+.dropzone.drag-over { border-color: #7c3aed; box-shadow: 0 0 30px rgba(124,58,237,0.15); }
+.dropzone-icon {
+  width: 72px; height: 72px; border-radius: 18px; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #7c3aed, #ec4899); color: #fff; margin: 0 auto 20px; font-size: 28px;
+}
+.dropzone h3 { font-size: 20px; margin-bottom: 6px; }
+.dropzone p { font-size: 14px; color: #7c6f8a; margin-bottom: 20px; }
+.dropzone-error { margin-top: 12px; font-size: 13px; color: #ef4444; background: #fef2f2; display: inline-block; padding: 4px 12px; border-radius: 8px; }
+
+/* ============================================================
+   Preview & Options
+   ============================================================ */
+.preview-box { max-width: 640px; margin: 0 auto; }
+.preview-box img { width: 100%; max-height: 350px; object-fit: contain; border-radius: 16px; background: #f8f5fc; }
+.preview-name { text-align: center; font-size: 13px; color: #7c6f8a; margin-top: 8px; }
+.options-box { max-width: 640px; margin: 24px auto 0; padding: 24px; }
+.options-box h3 { text-align: center; font-size: 18px; margin-bottom: 16px; }
+.scale-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.scale-card {
+  padding: 18px 12px; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s;
+  border: 2px solid transparent; background: rgba(255,255,255,0.5);
+}
+.scale-card:hover { border-color: #c4b5fd; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.scale-card.selected { border-color: #a855f7; background: #faf5ff; box-shadow: 0 4px 16px rgba(124,58,237,0.1); transform: scale(1.03); }
+.scale-card.locked { opacity: 0.4; cursor: not-allowed; }
+.scale-card .scale-num { font-size: 32px; font-weight: 800; margin-bottom: 4px; }
+.scale-card .scale-desc { font-size: 11px; color: #7c6f8a; margin-bottom: 8px; }
+.scale-card .scale-badge {
+  display: inline-block; font-size: 12px; padding: 3px 12px; border-radius: 10px;
+}
+.scale-badge.sel { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; font-weight: 600; }
+.scale-badge.unsel { border: 1px solid #d4cde0; color: #7c6f8a; }
+.scale-badge.locked-badge { color: #ef4444; }
+.action-btns { display: flex; gap: 12px; justify-content: center; margin-top: 20px; }
+
+/* ============================================================
+   Result
+   ============================================================ */
+.result-box { max-width: 640px; margin: 24px auto 0; padding: 24px; text-align: center; }
+.result-box .success-text { color: #059669; font-weight: 600; margin-bottom: 16px; }
+
+/* ============================================================
+   Demo Gallery
+   ============================================================ */
+.section { padding: 80px 20px; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-title { text-align: center; font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+.section-subtitle { text-align: center; color: #7c6f8a; max-width: 480px; margin: 0 auto 48px; }
+.demo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 768px) { .demo-grid { grid-template-columns: 1fr; } }
+
+.demo-card { border-radius: 20px; overflow: hidden; transition: all 0.3s; }
+.demo-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+.demo-compare { position: relative; aspect-ratio: 1; overflow: hidden; background: #111; cursor: ew-resize; user-select: none; }
+.demo-compare img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.demo-label { position: absolute; top: 8px; padding: 2px 8px; border-radius: 4px; color: #fff; font-size: 10px; z-index: 10; }
+.demo-label.left { left: 8px; background: rgba(0,0,0,0.7); }
+.demo-label.right { right: 8px; background: rgba(124,58,237,0.9); }
+.demo-slider { position: absolute; top: 0; bottom: 0; width: 2px; background: #fff; z-index: 20; box-shadow: 0 0 4px rgba(0,0,0,0.3); }
+.demo-handle {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 28px; height: 28px; background: #fff; border-radius: 50%;
+  border: 2px solid #a855f7; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  display: flex; align-items: center; justify-content: center;
+}
+.demo-handle svg { width: 14px; height: 14px; color: #a855f7; }
+.demo-blur { filter: blur(3px) brightness(0.95) saturate(0.75); }
+.demo-info { padding: 12px; text-align: center; font-size: 14px; background: rgba(255,255,255,0.8); }
+.demo-info .name { font-weight: 500; }
+.demo-info .hint { font-size: 11px; color: #7c6f8a; }
+
+/* ============================================================
+   Features
+   ============================================================ */
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 768px) { .features-grid { grid-template-columns: 1fr; } }
+.feature-card {
+  padding: 28px; border-radius: 20px; transition: all 0.3s;
+  background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.06);
+}
+.feature-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+.feature-icon {
+  width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #faf5ff, #fce7f3); color: #7c3aed; margin-bottom: 16px; transition: transform 0.3s;
+}
+.feature-card:hover .feature-icon { transform: scale(1.1); }
+.feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.feature-card p { font-size: 14px; color: #7c6f8a; line-height: 1.6; }
+
+/* ============================================================
+   Pricing
+   ============================================================ */
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 768px) { .pricing-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; } }
+.pricing-card {
+  padding: 28px; border-radius: 20px; text-align: center; position: relative;
+  background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.06);
+  transition: all 0.3s;
+}
+.pricing-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+.pricing-card.highlighted { border: 2px solid #c4b5fd; transform: scale(1.03); box-shadow: 0 8px 40px rgba(124,58,237,0.12); }
+.pricing-card.highlighted:hover { transform: scale(1.03) translateY(-3px); }
+.popular-badge {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg, #7c3aed, #ec4899); color: #fff;
+  font-size: 12px; font-weight: 600; padding: 4px 16px; border-radius: 12px;
+}
+.pricing-name { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+.pricing-price { font-size: 44px; font-weight: 800; }
+.pricing-price span { font-size: 16px; color: #7c6f8a; font-weight: 400; }
+.pricing-credits { font-size: 13px; color: #7c6f8a; margin-bottom: 20px; }
+.pricing-features { list-style: none; text-align: left; margin-bottom: 24px; }
+.pricing-features li { font-size: 13px; padding: 6px 0; color: #7c6f8a; display: flex; align-items: center; gap: 8px; }
+.pricing-features li::before { content: '✓'; color: #10b981; font-weight: 700; font-size: 14px; }
+.pricing-btn {
+  display: block; width: 100%; padding: 12px; border-radius: 14px; font-size: 14px; font-weight: 600;
+  border: 2px solid #7c3aed; color: #7c3aed; background: transparent; cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.pricing-btn:hover { background: #7c3aed; color: #fff; }
+.pricing-btn.primary-btn { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; border: none; }
+
+/* ============================================================
+   CTA
+   ============================================================ */
+.cta-box {
+  max-width: 600px; margin: 0 auto; text-align: center; padding: 48px 32px; border-radius: 28px;
+  background: linear-gradient(135deg, #7c3aed, #ec4899); color: #fff; position: relative; overflow: hidden;
+}
+.cta-box h2 { font-size: 32px; font-weight: 800; margin-bottom: 12px; position: relative; z-index: 10; }
+.cta-box p { color: rgba(255,255,255,0.8); margin-bottom: 24px; position: relative; z-index: 10; }
+.cta-btn {
+  display: inline-block; padding: 14px 32px; border-radius: 16px; background: #fff; color: #7c3aed;
+  font-weight: 600; font-size: 15px; text-decoration: none; position: relative; z-index: 10;
+  transition: all 0.3s;
+}
+.cta-btn:hover { transform: scale(1.05); }
+.cta-blob {
+  position: absolute; border-radius: 50%; background: rgba(255,255,255,0.08);
+}
+.cta-blob.tl { width: 200px; height: 200px; top: -60px; right: -40px; }
+.cta-blob.br { width: 140px; height: 140px; bottom: -40px; left: -30px; }
+
+/* ============================================================
+   Ad Placeholder
+   ============================================================ */
+.ad-placeholder {
+  max-width: 800px; margin: 0 auto; height: 90px; display: flex; align-items: center; justify-content: center;
+  border: 1px dashed #d4cde0; border-radius: 12px; font-size: 13px; color: #c4b5fd; background: rgba(0,0,0,0.02);
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.footer {
+  border-top: 1px solid rgba(0,0,0,0.06); padding: 32px 20px; text-align: center;
+  background: linear-gradient(135deg, #faf5ff, #fff1f2); font-size: 13px; color: #7c6f8a;
+}
+.footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 8px; }
+.footer-links a { color: #7c6f8a; text-decoration: none; }
+.footer-links a:hover { color: #7c3aed; }
+
+/* ============================================================
+   Wavy Divider
+   ============================================================ */
+.wavy { position: relative; height: 0; }
+.wavy svg { position: absolute; bottom: 0; left: 0; right: 0; }
+
+/* ============================================================
+   Top-up Packs
+   ============================================================ */
+.topup-grid { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 16px; }
+.topup-card {
+  width: 150px; padding: 18px; border-radius: 18px; text-align: center; cursor: pointer; transition: all 0.3s;
+  background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.06);
+}
+.topup-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+.topup-card .num { font-size: 28px; font-weight: 800; }
+.topup-card .unit { font-size: 11px; color: #7c6f8a; }
+.topup-card .price { font-size: 20px; font-weight: 700; margin: 4px 0; }
+.topup-card .buy { font-size: 12px; font-weight: 500; color: #7c3aed; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <span class="logo-icon">✦</span>
+      <span>ImageUpscaler</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:10px">
+      <a href="#pricing" class="badge">5 free credits</a>
+      <a href="#pricing" class="btn btn-primary">Upgrade</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero + Upload -->
+<section class="hero gradient-hero">
+  <div class="hero-blob animate-float" style="top:60px;left:5%;width:300px;height:300px;background:#c4b5fd;"></div>
+  <div class="hero-blob animate-float-delay" style="top:120px;right:5%;width:380px;height:380px;background:#fbcfe8;"></div>
+  <div class="hero-blob animate-float-delay2" style="bottom:40px;left:30%;width:260px;height:260px;background:#fed7aa;"></div>
+
+  <div class="hero-inner">
+    <div class="hero-badge animate-pulse-glow">✦ Powered by SeedVR2 AI</div>
+    <h1>Upscale Images with <span class="gradient-text">AI Magic</span></h1>
+    <p>Transform low-res images into stunning high-definition masterpieces. Choose your target resolution — up to 4K.</p>
+
+    <!-- Drop Zone -->
+    <div id="dropzone" class="dropzone" onclick="document.getElementById('fileInput').click()">
+      <div class="dropzone-icon">⬆</div>
+      <h3>Drag & drop your image here</h3>
+      <p>or click to browse — PNG, JPG, WEBP up to 25MB</p>
+      <button class="btn btn-outline" onclick="event.stopPropagation();document.getElementById('fileInput').click()">Choose Image</button>
+      <div id="dropError" class="dropzone-error" style="display:none"></div>
+    </div>
+    <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.webp" style="display:none" onchange="handleFile(this)">
+
+    <!-- Preview (hidden initially) -->
+    <div id="previewSection" style="display:none">
+      <div class="preview-box glass" style="padding:16px">
+        <img id="previewImg" src="" alt="Preview">
+        <p class="preview-name" id="previewName"></p>
+      </div>
+      <div id="optionsSection" class="options-box glass" style="display:none">
+        <h3>Choose Target Resolution</h3>
+        <p style="text-align:center;font-size:13px;color:#7c6f8a;margin-bottom:16px">Output is proportional to your image — longest edge determines resolution</p>
+        <div class="scale-options">
+          <div class="scale-card" onclick="selectResolution('HD', 1)" id="resHD">
+            <div class="scale-num gradient-text">HD</div>
+            <div class="scale-desc">Long edge 1080px · 1 credit</div>
+            <span class="scale-badge unsel">Select</span>
+          </div>
+          <div class="scale-card" onclick="selectResolution('2K', 2)" id="res2K">
+            <div class="scale-num gradient-text">2K</div>
+            <div class="scale-desc">Long edge 1440px · 2 credits</div>
+            <span class="scale-badge unsel">Select</span>
+          </div>
+          <div class="scale-card" onclick="selectResolution('4K', 5)" id="res4K">
+            <div class="scale-num gradient-text">4K</div>
+            <div class="scale-desc">Long edge 2160px · 5 credits</div>
+            <span class="scale-badge unsel">Select</span>
+          </div>
+        </div>
+        <div class="action-btns">
+          <button class="btn btn-primary btn-lg" id="upscaleBtn" disabled onclick="startUpscale()">✨ Upscale</button>
+          <button class="btn btn-outline" onclick="resetAll()">Cancel</button>
+        </div>
+      </div>
+      <div id="resultSection" class="result-box glass" style="display:none">
+        <p class="success-text">✨ Upscale complete!</p>
+        <img id="resultImg" src="" alt="Result" style="width:100%;max-height:350px;object-fit:contain;border-radius:16px;background:#f8f5fc">
+        <div style="margin-top:16px;display:flex;gap:12px;justify-content:center">
+          <button class="btn btn-primary btn-lg" onclick="alert('Download would start here.')">⬇ Download Upscaled Image</button>
+          <button class="btn btn-outline" onclick="resetAll()">Upscale Another</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="hero-stats" style="margin-top: 48px;" id="heroStats">
+      <div><strong>1M+</strong> Images Upscaled</div>
+      <div><strong>50K+</strong> Happy Users</div>
+      <div><strong>4.9</strong> User Rating</div>
+    </div>
+  </div>
+  <div class="wavy"><svg viewBox="0 0 1440 60" fill="#fefcf9"><path d="M0 60V30C240 0 480 0 720 15C960 30 1200 45 1440 30V60H0Z"/></svg></div>
+</section>
+
+<!-- Ad -->
+<div style="padding:24px 20px"><div class="ad-placeholder">Ad Placement</div></div>
+
+<!-- Demo Gallery -->
+<section class="section">
+  <div class="section-inner">
+    <h2 class="section-title">See the <span class="gradient-text">Difference</span></h2>
+    <p class="section-subtitle">Drag the slider to compare original low-res images with AI-upscaled results</p>
+    <div class="demo-grid" id="demoGrid"></div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section gradient-subtle">
+  <div class="section-inner">
+    <h2 class="section-title">Why <span class="gradient-text">ImageUpscaler</span>?</h2>
+    <p class="section-subtitle">Built with the latest AI technology to give your images the quality they deserve</p>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">🧠</div><h3>AI-Powered Engine</h3><p>SeedVR2 model reconstructs details, removes artifacts, and sharpens edges with stunning accuracy.</p></div>
+      <div class="feature-card"><div class="feature-icon">⚡</div><h3>Lightning Fast</h3><p>Cloud GPU acceleration delivers upscaled images in seconds. No software to install.</p></div>
+      <div class="feature-card"><div class="feature-icon">🛡</div><h3>Privacy Protected</h3><p>Images auto-deleted after processing. We never share, store, or train on your data.</p></div>
+      <div class="feature-card"><div class="feature-icon">📐</div><h3>Target Resolution</h3><p>Long edge 1080px to 2160px — keeps your aspect ratio. We handle the rest.</p></div>
+      <div class="feature-card"><div class="feature-icon">🖼</div><h3>All Major Formats</h3><p>PNG, JPG, JPEG, WEBP, HEIC — drag and drop, we handle the rest.</p></div>
+      <div class="feature-card"><div class="feature-icon">🎁</div><h3>Free Every Month</h3><p>5 free upscales monthly for registered users. No credit card needed.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="section" id="pricing">
+  <div class="section-inner">
+    <h2 class="section-title">Choose Your <span class="gradient-text">Plan</span></h2>
+    <p class="section-subtitle">Credits by target resolution: 1080p = 1 credit, 2K = 2 credits, 4K = 5 credits.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">Free</div>
+        <div class="pricing-price">$0<span>/mo</span></div>
+        <div class="pricing-credits">5 credits / month</div>
+        <ul class="pricing-features">
+          <li>5 credits / month</li><li>Up to 1080p</li><li>Max 25MB upload</li><li>Standard processing</li>
+        </ul>
+        <a href="#" class="pricing-btn">Get Started</a>
+      </div>
+      <div class="pricing-card highlighted">
+        <div class="popular-badge">Most Popular</div>
+        <div class="pricing-name">Plus</div>
+        <div class="pricing-price">$6<span>/mo</span></div>
+        <div class="pricing-credits">100 credits / month</div>
+        <ul class="pricing-features">
+          <li>100 credits / month</li><li>Up to 4K</li><li>Max 50MB upload</li><li>Priority processing</li>
+        </ul>
+        <a href="#" class="pricing-btn primary-btn">Subscribe</a>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">Pro</div>
+        <div class="pricing-price">$12<span>/mo</span></div>
+        <div class="pricing-credits">300 credits / month</div>
+        <ul class="pricing-features">
+          <li>300 credits / month</li><li>Up to 4K</li><li>Max 100MB upload</li><li>Fastest processing</li><li>Batch upscale</li>
+        </ul>
+        <a href="#" class="pricing-btn">Subscribe</a>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:40px">
+      <h3 style="margin-bottom:16px">One-Time Credit Packs</h3>
+      <div class="topup-grid">
+        <div class="topup-card" onclick="alert('20 credits for $3')"><div class="num gradient-text">20</div><div class="unit">credits</div><div class="price">$3</div><div class="buy">Buy Now →</div></div>
+        <div class="topup-card" onclick="alert('50 credits for $6')"><div class="num gradient-text">50</div><div class="unit">credits</div><div class="price">$6</div><div class="buy">Buy Now →</div></div>
+        <div class="topup-card" onclick="alert('100 credits for $10')"><div class="num gradient-text">100</div><div class="unit">credits</div><div class="price">$10</div><div class="buy">Buy Now →</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section gradient-subtle">
+  <div class="cta-box">
+    <div class="cta-blob tl"></div><div class="cta-blob br"></div>
+    <h2>Ready to Enhance Your Images?</h2>
+    <p>Start with 5 free upscales. No credit card needed.</p>
+    <a href="#" class="cta-btn" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Get Started Free →</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-links"><a href="#pricing">Pricing</a><a href="#">Privacy</a><a href="#">Terms</a></div>
+  <div>&copy; 2026 ImageUpscaler</div>
+</footer>
+
+<script>
+// ============================================================
+// Demo Comparison Cards
+// ============================================================
+const DEMOS = [
+  { label: 'Portrait', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&h=800&fit=crop&q=85' },
+  { label: 'Landscape', url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=800&fit=crop&q=85' },
+  { label: 'Wildlife', url: 'https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=800&h=800&fit=crop&q=85' }
+];
+
+function createDemoCards() {
+  const grid = document.getElementById('demoGrid');
+  DEMOS.forEach(d => {
+    const card = document.createElement('div');
+    card.className = 'demo-card glass';
+    card.innerHTML = `
+      <div class="demo-compare" data-url="${d.url}">
+        <!-- Right side: sharp -->
+        <img src="${d.url}" alt="${d.label} upscaled">
+        <div class="demo-label right">AI 4x</div>
+        <!-- Left side: blurred overlay -->
+        <div class="demo-overlay" style="position:absolute;inset:0;overflow:hidden;clip-path:inset(0 50% 0 0)">
+          <img src="${d.url}" alt="${d.label} original" class="demo-blur">
+          <div class="demo-label left">Original</div>
+        </div>
+        <!-- Slider -->
+        <div class="demo-slider" style="left:50%">
+          <div class="demo-handle"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M8 4l8 8-8 8"/></svg></div>
+        </div>
+      </div>
+      <div class="demo-info"><span class="name">${d.label}</span><br><span class="hint">← Drag to compare →</span></div>
+    `;
+    grid.appendChild(card);
+    initCompareSlider(card.querySelector('.demo-compare'));
+  });
+}
+
+function initCompareSlider(container) {
+  const overlay = container.querySelector('.demo-overlay');
+  const slider = container.querySelector('.demo-slider');
+  const handle = container.querySelector('.demo-handle');
+  let dragging = false;
+
+  function move(clientX) {
+    const rect = container.getBoundingClientRect();
+    let p = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+    overlay.style.clipPath = `inset(0 ${100 - p}% 0 0)`;
+    slider.style.left = p + '%';
+  }
+
+  handle.addEventListener('mousedown', e => { e.preventDefault(); dragging = true; });
+  handle.addEventListener('touchstart', e => { e.preventDefault(); dragging = true; });
+  window.addEventListener('mousemove', e => { if (dragging) move(e.clientX); });
+  window.addEventListener('touchmove', e => { if (dragging) move(e.touches[0].clientX); });
+  window.addEventListener('mouseup', () => dragging = false);
+  window.addEventListener('touchend', () => dragging = false);
+  container.addEventListener('click', e => { if (!dragging) move(e.clientX); });
+}
+
+createDemoCards();
+
+// ============================================================
+// Upload Flow
+// ============================================================
+let selectedResolution = null;
+let selectedCredits = 0;
+let previewFile = null;
+
+const ALLOWED = ['.png','.jpg','.jpeg','.webp'];
+const MAX_SIZE = 25 * 1024 * 1024;
+
+const RESOLUTIONS = ['HD','2K','4K'];
+const LOCKED_RES = [];
+
+function handleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const ext = '.' + file.name.split('.').pop().toLowerCase();
+  if (!ALLOWED.includes(ext)) {
+    showError('Unsupported format. Please use PNG, JPG, or WEBP.');
+    return;
+  }
+  if (file.size > MAX_SIZE) {
+    showError(`File too large (${(file.size/1024/1024).toFixed(1)}MB). Maximum is 25MB.`);
+    return;
+  }
+  previewFile = file;
+  selectedResolution = null;
+  selectedCredits = 0;
+  showPreview(file);
+}
+
+function showPreview(file) {
+  const url = URL.createObjectURL(file);
+  document.getElementById('dropzone').style.display = 'none';
+  document.getElementById('heroStats').style.display = 'none';
+  document.getElementById('previewSection').style.display = 'block';
+  document.getElementById('previewImg').src = url;
+  document.getElementById('previewName').textContent = file.name + ' · ' + formatSize(file.size);
+  document.getElementById('optionsSection').style.display = 'block';
+  document.getElementById('resultSection').style.display = 'none';
+  updateResUI();
+  document.getElementById('upscaleBtn').disabled = true;
+}
+
+function selectResolution(res, credits) {
+  if (LOCKED_RES.includes(res)) return; // locked
+  selectedResolution = res;
+  selectedCredits = credits;
+  updateResUI();
+  document.getElementById('upscaleBtn').disabled = false;
+}
+
+function updateResUI() {
+  RESOLUTIONS.forEach(res => {
+    const el = document.getElementById('res' + res);
+    if (!el) return;
+    const badge = el.querySelector('.scale-badge');
+    if (LOCKED_RES.includes(res)) return;
+    if (selectedResolution === res) {
+      el.classList.add('selected');
+      badge.className = 'scale-badge sel';
+      badge.textContent = 'Selected ✓';
+    } else {
+      el.classList.remove('selected');
+      badge.className = 'scale-badge unsel';
+      badge.textContent = 'Select';
+    }
+  });
+  const btn = document.getElementById('upscaleBtn');
+  if (selectedResolution) btn.innerHTML = '✨ Upscale to ' + selectedResolution + ' <span style="font-size:12px;opacity:0.8">(' + selectedCredits + ' credits)</span>';
+}
+
+function startUpscale() {
+  if (!selectedResolution) return;
+  document.getElementById('optionsSection').style.display = 'none';
+  document.getElementById('resultSection').style.display = 'block';
+  document.getElementById('resultImg').src = document.getElementById('previewImg').src;
+  document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetAll() {
+  document.getElementById('dropzone').style.display = '';
+  document.getElementById('heroStats').style.display = '';
+  document.getElementById('previewSection').style.display = 'none';
+  document.getElementById('optionsSection').style.display = 'none';
+  document.getElementById('resultSection').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+  selectedScale = null;
+  previewFile = null;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showError(msg) {
+  const el = document.getElementById('dropError');
+  el.textContent = msg;
+  el.style.display = 'inline-block';
+  setTimeout(() => el.style.display = 'none', 4000);
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/(1024*1024)).toFixed(2) + ' MB';
+}
+
+// ============================================================
+// Drag & Drop on the whole page
+// ============================================================
+const dz = document.getElementById('dropzone');
+['dragenter','dragover'].forEach(ev => {
+  document.body.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('drag-over'); });
+});
+['dragleave','drop'].forEach(ev => {
+  document.body.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('drag-over'); });
+});
+document.body.addEventListener('drop', e => {
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    document.getElementById('fileInput').files = dt.files;
+    handleFile(document.getElementById('fileInput'));
+  }
+});
+</script>
+
+</body>
+</html>
