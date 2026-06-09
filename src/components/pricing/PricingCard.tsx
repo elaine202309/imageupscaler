@@ -52,7 +52,7 @@ export function PricingCard({ plan, current, onSelect }: PricingCardProps) {
       {/* Action */}
       {plan.price === 0 ? (
         <ButtonLink
-          href="/upload"
+          href="/"
           variant={plan.highlighted ? "default" : "outline"}
           className={cn("w-full rounded-xl", plan.highlighted && "shadow-md shadow-purple-500/20")}
         >
