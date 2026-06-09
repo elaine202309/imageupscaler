@@ -44,14 +44,36 @@ export async function getUserQuota(userId: string) {
 }
 
 export async function deductUserCredit(userId: string) {
-  const quota = await getUserQuota(userId);
+  // If user doesn't exist yet, create one
+  const existing = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  if (existing.length === 0) {
+    await db.insert(users).values({
+      id: userId,
+      email: "pending",
+      plan: "free",
+      monthlyCredits: 5,
+      creditsUsed: 1,
+      creditResetAt: getNextResetDate(),
+    });
+    return { remaining: 4 };
+  }
+
+  const user = existing[0];
+  const quota = {
+    total: user.monthlyCredits,
+    used: user.creditsUsed,
+    remaining: user.monthlyCredits - user.creditsUsed,
+  };
+
   if (quota.remaining <= 0) {
     throw new Error("No credits remaining. Upgrade to continue.");
   }
+
   await db
     .update(users)
     .set({ creditsUsed: (quota.used + 1) })
     .where(eq(users.id, userId));
+
   return { remaining: quota.remaining - 1 };
 }
 
