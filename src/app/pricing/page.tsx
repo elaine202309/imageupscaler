@@ -73,6 +73,7 @@ export default function PricingPage() {
             <FaqItem q="Will I be charged when my free credits run out?" a="No. We never charge you without permission. When credits run low, you can choose to buy a credit pack or upgrade — but only if you want to." />
             <FaqItem q="Can I cancel my subscription?" a="Yes, you can cancel anytime from your account settings. Your subscription remains active until the end of your current billing period — no partial refunds. We do not offer refunds for used credits or partial months." />
             <FaqItem q="What if I use up all my credits?" a="You can top up with a one-time credit pack starting at $3 for 20 credits, or upgrade to a plan with more monthly credits. There's no auto-charge — you stay in control." />
+            <FaqItem q="What payment methods do you accept?" a="We accept all major credit cards, debit cards, and PayPal. Payment processing is handled securely by Stripe." />
             <FaqItem q="Can I upgrade or downgrade later?" a="Yes. Upgrade anytime and pay only the difference. Want to downgrade? No problem — it takes effect at the end of your current billing cycle." />
             <FaqItem q="Where do my images go after processing?" a="Uploaded and processed images are automatically deleted within 30 days. You can request earlier deletion anytime. We never use your images for training or share them with anyone." />
           </div>
