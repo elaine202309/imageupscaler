@@ -39,8 +39,10 @@ export async function POST(request: NextRequest) {
     const jobId = uuidv4();
     let falRequestId: string | null = null;
     let status = "processing";
+    const scaleMap: Record<string, number> = { "2x": 2, "3x": 3, "4x": 4 };
+    const scaleFactor = scaleMap[target] || 2;
 
-    console.log("[Upscale] Sending to fal.ai:", { originalUrl, target });
+    console.log("[Upscale] Sending to fal.ai:", { originalUrl, target, scaleFactor });
     try {
       const { requestId } = await submitUpscaleByTarget(originalUrl, target);
       falRequestId = requestId;
@@ -48,7 +50,7 @@ export async function POST(request: NextRequest) {
       if (process.env.FAL_KEY) {
         status = "failed";
       } else {
-        const sim = await simulateSubmit(originalUrl, 2);
+        const sim = await simulateSubmit(originalUrl, scaleFactor);
         falRequestId = sim.requestId;
       }
     }
@@ -61,7 +63,7 @@ export async function POST(request: NextRequest) {
         id: jobId,
         userId,
         originalUrl,
-        scaleFactor: 2,
+        scaleFactor,
         status,
         replicatePredictionId: falRequestId,
         createdAt: new Date(),
@@ -71,7 +73,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({
-      job: { id: jobId, userId, originalUrl, resultUrl: null, scaleFactor: 2, status, replicatePredictionId: falRequestId, createdAt: now, completedAt: null },
+      job: { id: jobId, userId, originalUrl, resultUrl: null, scaleFactor, status, replicatePredictionId: falRequestId, createdAt: now, completedAt: null },
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
