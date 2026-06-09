@@ -52,6 +52,10 @@ export default function HomePage() {
   // Start upscale
   const handleUpscale = useCallback(async () => {
     if (!originalUrl || !target) return;
+    if (!session) {
+      signIn("google", { callbackUrl: "/" });
+      return;
+    }
     setStep("processing");
     setError(null);
 
@@ -142,18 +146,7 @@ export default function HomePage() {
           )}
 
           <div id="upscale-section">
-            {step === "upload" && !file && !session && (
-              <div className="text-center">
-                <DropZone onFileSelect={handleFileSelect} disabled />
-                <p className="mt-4 text-muted-foreground">
-                  <button onClick={() => signIn("google", { callbackUrl: "/" })} className="text-primary font-semibold hover:underline">
-                    Sign in with Google
-                  </button>
-                  {" "}to get <span className="font-semibold">5 free credits</span> and start upscaling
-                </p>
-              </div>
-            )}
-            {step === "upload" && !file && session && <DropZone onFileSelect={handleFileSelect} />}
+            {step === "upload" && !file && <DropZone onFileSelect={handleFileSelect} />}
 
             {step === "upload" && file && (
               <div className="rounded-2xl glass p-6">
