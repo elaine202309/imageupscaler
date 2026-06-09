@@ -106,7 +106,7 @@ function mapJobToResponse(job: typeof upscaleJobs.$inferSelect): UpscaleJob {
     scaleFactor: job.scaleFactor as UpscaleJob["scaleFactor"],
     status: job.status as UpscaleJob["status"],
     replicatePredictionId: job.replicatePredictionId,
-    createdAt: job.createdAt ?? new Date().toISOString(),
-    completedAt: job.completedAt,
+    createdAt: job.createdAt instanceof Date ? job.createdAt.toISOString() : (job.createdAt ?? new Date().toISOString()),
+    completedAt: job.completedAt instanceof Date ? job.completedAt.toISOString() : job.completedAt,
   };
 }
