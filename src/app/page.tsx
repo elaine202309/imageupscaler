@@ -20,6 +20,7 @@ type Step = "upload" | "options" | "processing" | "result" | "error";
 export default function HomePage() {
   const { data: session } = useSession();
   const [step, setStep] = useState<Step>("upload");
+  const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [originalUrl, setOriginalUrl] = useState<string | null>(null);
   const [target, setTarget] = useState<TargetResolution | null>(null);
@@ -36,6 +37,7 @@ export default function HomePage() {
     const blobUrl = URL.createObjectURL(f);
     setOriginalUrl(blobUrl);
     setStep("options");
+    setUploading(true);
     // Upload to server — must succeed before upscale
     try {
       const formData = new FormData();
@@ -49,8 +51,9 @@ export default function HomePage() {
       setOriginalUrl(url); // server URL that fal.ai can access
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Upload failed";
-      console.warn("Upload error:", msg);
-      // Keep preview and options — user can still try
+      setError(msg);
+    } finally {
+      setUploading(false);
     }
   }, []);
 
@@ -167,10 +170,10 @@ export default function HomePage() {
                   <h2 className="text-xl font-semibold text-center">Choose Target Resolution</h2>
                   <UpscaleOptions selected={target} onSelect={setTarget} disabled={false} />
                   <div className="flex gap-3 justify-center pt-2">
-                    <Button size="lg" onClick={handleUpscale} disabled={!target}
+                    <Button size="lg" onClick={handleUpscale} disabled={!target || uploading}
                       className="text-base px-10 py-6 h-auto rounded-2xl shadow-lg shadow-purple-500/25 hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-40"
-                      style={{ background: target ? "var(--gradient-primary)" : undefined }}>
-                      ✨ Upscale to {target}
+                      style={{ background: target && !uploading ? "var(--gradient-primary)" : undefined }}>
+                      {uploading ? "Uploading..." : `✨ Upscale to ${target || "..."}`}
                     </Button>
                     <Button variant="ghost" onClick={resetAll} className="rounded-xl">Cancel</Button>
                   </div>
