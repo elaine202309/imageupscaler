@@ -229,7 +229,7 @@ export default function HomePage() {
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Why <span className="gradient-text">ImageUpscaler</span>?</h2>
           <p className="text-muted-foreground text-center mb-12 max-w-xl mx-auto">Built with the latest AI technology</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <FeatureCard icon={<BrainIcon />} title="AI-Powered Engine" description="SeedVR2 model reconstructs details and sharpens edges with stunning accuracy." />
+            <FeatureCard icon={<BrainIcon />} title="AI-Powered Engine" description="AI model reconstructs details and sharpens edges with stunning accuracy." />
             <FeatureCard icon={<LightningIcon />} title="Lightning Fast" description="Cloud GPU delivers upscaled images in seconds." />
             <FeatureCard icon={<ShieldIcon />} title="Privacy Protected" description="Images auto-deleted. We never share or train on your data." />
             <FeatureCard icon={<ScaleIcon />} title="HD · 2K · 4K" description="Choose your target resolution. We handle the rest." />
@@ -263,7 +263,7 @@ export default function HomePage() {
         <div className="container mx-auto max-w-2xl">
           <h2 className="text-3xl font-bold text-center mb-10">Frequently Asked Questions</h2>
           <div className="space-y-3">
-            <FaqItem q="What is ImageUpscaler?" a="ImageUpscaler uses AI (SeedVR2 model) to upscale low-resolution images into high-definition versions. Choose your target resolution — HD, 2K, or 4K — and our AI handles the rest." />
+            <FaqItem q="What is ImageUpscaler?" a="ImageUpscaler uses AI to upscale low-resolution images into high-definition versions. Choose your target resolution — HD, 2K, or 4K — and our AI handles the rest." />
             <FaqItem q="Is it really free?" a="Yes! Sign in with Google to get 5 free credits every month. Each HD upscale uses 1 credit. Need more? Upgrade to Plus or Pro." />
             <FaqItem q="What image formats are supported?" a="PNG, JPG, JPEG, WEBP, and HEIC. Maximum file size is 25MB." />
             <FaqItem q="How long does upscaling take?" a="Most images process in 10–30 seconds. Larger images or higher target resolutions may take slightly longer." />
