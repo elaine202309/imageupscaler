@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db, users } from "./db";
 
 const FREE_CREDITS = 5;
@@ -50,7 +50,7 @@ export async function deductUserCredit(userId: string) {
   }
   await db
     .update(users)
-    .set({ creditsUsed: sql`credits_used + 1` })
+    .set({ creditsUsed: (quota.used + 1) })
     .where(eq(users.id, userId));
   return { remaining: quota.remaining - 1 };
 }
