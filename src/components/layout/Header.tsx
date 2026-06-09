@@ -38,21 +38,21 @@ export function Header() {
             style={{ background: "var(--gradient-primary)" }}>
             <SparkleIcon className="w-4.5 h-4.5 text-white" />
           </div>
-          <span className="hidden sm:inline">ImageUpscaler</span>
+          <span className="hidden sm:inline text-[22px]">ImageUpscaler</span>
         </Link>
 
         <div className="flex items-center gap-3">
           <QuotaBadge />
-          <ButtonLink href="/pricing" variant="ghost" size="sm" className="rounded-xl hidden sm:flex">
+          <ButtonLink href="/pricing" variant="ghost" className="rounded-xl text-[15px] px-4">
             Pricing
           </ButtonLink>
 
           {session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger className="rounded-full ring-2 ring-purple-200 hover:ring-purple-400 transition-all">
-                <Avatar className="w-8 h-8">
+                <Avatar className="w-9 h-9">
                   <AvatarImage src={session.user.image || ""} />
-                  <AvatarFallback className="text-xs">
+                  <AvatarFallback className="text-sm">
                     {session.user.name?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
@@ -71,10 +71,10 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <>
-              <ButtonLink href="/login" variant="ghost" size="sm" className="rounded-xl">
+              <ButtonLink href="/login" variant="ghost" className="rounded-xl text-[15px] px-4">
                 Sign In
               </ButtonLink>
-              <ButtonLink href="/pricing" size="sm" className="rounded-xl shadow-md shadow-purple-500/20 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5">
+              <ButtonLink href="/pricing" className="rounded-xl text-[15px] px-5 shadow-md shadow-purple-500/20 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5">
                 Upgrade
               </ButtonLink>
             </>
