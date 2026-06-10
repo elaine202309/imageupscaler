@@ -44,7 +44,7 @@ export default function PrivacyPage() {
           </Section>
 
           <Section title="8. Contact">
-            <p>If you have questions about this policy, email us at <strong>elaine20230910@gmail.com</strong>.</p>
+            <p>If you have questions about this policy, email us at <strong>support@freeupscale.online</strong>.</p>
           </Section>
         </div>
       </div>

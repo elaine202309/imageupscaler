@@ -28,8 +28,8 @@ export default function ContactPage() {
               </div>
               <h3 className="text-lg font-semibold mb-2">Email Us</h3>
               <p className="text-muted-foreground text-sm mb-3">Drop us a message anytime</p>
-              <a href="mailto:elaine20230910@gmail.com" className="text-primary font-semibold hover:underline">
-                elaine20230910@gmail.com
+              <a href="mailto:support@freeupscale.online" className="text-primary font-semibold hover:underline">
+                support@freeupscale.online
               </a>
             </div>
             <div className="glass rounded-2xl p-8 text-center hover:shadow-lg transition-all">

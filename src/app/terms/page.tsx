@@ -54,7 +54,7 @@ export default function TermsPage() {
           </Section>
 
           <Section title="11. Contact">
-            <p>For questions about these terms, email us at <strong>elaine20230910@gmail.com</strong>.</p>
+            <p>For questions about these terms, email us at <strong>support@freeupscale.online</strong>.</p>
           </Section>
         </div>
       </div>
