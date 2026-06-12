@@ -14,7 +14,6 @@ import { PricingCard } from "@/components/pricing/PricingCard";
 import { BannerAd } from "@/components/ads/BannerAd";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { PRICING_PLANS } from "@/types";
-import type { PricingPlan } from "@/types";
 
 type Step = "upload" | "options" | "processing" | "result" | "error";
 
