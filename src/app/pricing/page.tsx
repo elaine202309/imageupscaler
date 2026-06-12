@@ -1,15 +1,16 @@
 "use client";
 
+import { CreemCheckout } from "@creem_io/nextjs";
 import { PricingCard } from "@/components/pricing/PricingCard";
 import { PRICING_PLANS } from "@/types";
-import type { PricingPlan } from "@/types";
+
+const CREDIT_PACKS = [
+  { id: "prod_1mDrxF9DldGLGerCsJ2WY2", credits: 20, price: 3 },
+  { id: "prod_6LKub0br9X1CGIjAJA192v", credits: 50, price: 6 },
+  { id: "prod_4ISIfrPgLbsiJbANfbCbFp", credits: 100, price: 10 },
+];
 
 export default function PricingPage() {
-  const handleSelect = (plan: PricingPlan) => {
-    if (plan.price > 0) {
-      alert(`${plan.name} plan — redirects to creem.io in production.`);
-    }
-  };
 
   return (
     <div style={{ background: "var(--gradient-subtle)" }}>
@@ -27,7 +28,7 @@ export default function PricingPage() {
         {/* Plans */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {PRICING_PLANS.map((plan) => (
-            <PricingCard key={plan.id} plan={plan} current={false} onSelect={handleSelect} />
+            <PricingCard key={plan.id} plan={plan} current={false} />
           ))}
         </div>
 
@@ -36,9 +37,9 @@ export default function PricingPage() {
           <h3 className="text-lg font-semibold mb-4">One-Time Credit Packs</h3>
           <p className="text-sm text-muted-foreground mb-6">Need extra credits? Buy a pack — they never expire.</p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <CreditBadge credits={20} price={3} />
-            <CreditBadge credits={50} price={6} />
-            <CreditBadge credits={100} price={10} />
+            {CREDIT_PACKS.map((pack) => (
+              <CreditBadge key={pack.id} credits={pack.credits} price={pack.price} productId={pack.id} />
+            ))}
           </div>
         </div>
 
@@ -83,14 +84,16 @@ export default function PricingPage() {
   );
 }
 
-function CreditBadge({ credits, price }: { credits: number; price: number }) {
+function CreditBadge({ credits, price, productId }: { credits: number; price: number; productId: string }) {
   return (
-    <div className="rounded-2xl glass p-4 w-40 text-center hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-      <div className="text-2xl font-bold gradient-text">{credits}</div>
-      <div className="text-xs text-muted-foreground mb-1">credits</div>
-      <div className="text-lg font-bold mb-2">${price}</div>
-      <span className="text-xs text-primary font-medium">Buy Now →</span>
-    </div>
+    <CreemCheckout productId={productId}>
+      <div className="rounded-2xl glass p-4 w-40 text-center hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+        <div className="text-2xl font-bold gradient-text">{credits}</div>
+        <div className="text-xs text-muted-foreground mb-1">credits</div>
+        <div className="text-lg font-bold mb-2">${price}</div>
+        <span className="text-xs text-primary font-medium">Buy Now →</span>
+      </div>
+    </CreemCheckout>
   );
 }
 

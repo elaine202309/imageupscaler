@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useSession, signIn } from "next-auth/react";
+import { CreemCheckout } from "@creem_io/nextjs";
 import { DropZone } from "@/components/upload/DropZone";
 import { ImagePreview } from "@/components/upload/ImagePreview";
 import { BeforeAfter } from "@/components/upload/BeforeAfter";
@@ -269,7 +270,9 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <h3 className="text-lg font-semibold mb-4">One-Time Credit Packs</h3>
             <div className="flex flex-wrap gap-4 justify-center">
-              <CreditBadge credits={20} price={3} /><CreditBadge credits={50} price={6} /><CreditBadge credits={100} price={10} />
+              <CreditBadge productId="prod_1mDrxF9DldGLGerCsJ2WY2" credits={20} price={3} />
+              <CreditBadge productId="prod_6LKub0br9X1CGIjAJA192v" credits={50} price={6} />
+              <CreditBadge productId="prod_4ISIfrPgLbsiJbANfbCbFp" credits={100} price={10} />
             </div>
           </div>
         </div>
@@ -355,8 +358,17 @@ function DemoCard({ label, imageUrl }: { label: string; imageUrl: string }) {
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (<div className="group p-6 rounded-2xl glass hover:shadow-lg hover:-translate-y-1 transition-all"><div className="w-11 h-11 flex items-center justify-center rounded-xl bg-gradient-to-br from-purple-100 to-pink-100 text-purple-600 mb-4 group-hover:scale-110 transition-transform">{icon}</div><h3 className="font-semibold mb-2">{title}</h3><p className="text-sm text-muted-foreground">{description}</p></div>);
 }
-function CreditBadge({ credits, price }: { credits: number; price: number }) {
-  return (<div className="rounded-2xl glass p-4 w-40 text-center hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer"><div className="text-2xl font-bold gradient-text">{credits}</div><div className="text-xs text-muted-foreground mb-1">credits</div><div className="text-lg font-bold mb-2">${price}</div><span className="text-xs text-primary font-medium">Buy Now →</span></div>);
+function CreditBadge({ credits, price, productId }: { credits: number; price: number; productId: string }) {
+  return (
+    <CreemCheckout productId={productId}>
+      <div className="rounded-2xl glass p-4 w-40 text-center hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer">
+        <div className="text-2xl font-bold gradient-text">{credits}</div>
+        <div className="text-xs text-muted-foreground mb-1">credits</div>
+        <div className="text-lg font-bold mb-2">${price}</div>
+        <span className="text-xs text-primary font-medium">Buy Now →</span>
+      </div>
+    </CreemCheckout>
+  );
 }
 function SparkleIcon({ className }: { className?: string }) { return <svg className={className} fill="currentColor" viewBox="0 0 20 20"><path d="M12.736 3.97a.733.733 0 011.294 0l2.345 4.587a.733.733 0 00.537.39l5.048.764c.596.09.834.82.405 1.24l-3.643 3.638a.733.733 0 00-.205.635l.854 5.136c.1.596-.524 1.05-1.06.773l-4.47-2.307a.734.734 0 00-.666 0l-4.47 2.307c-.536.277-1.16-.177-1.06-.773l.854-5.136a.733.733 0 00-.205-.636L4.91 10.95c-.43-.42-.19-1.15.405-1.24l5.048-.764a.733.733 0 00.537-.39l2.345-4.587z" /></svg>; }
 function BrainIcon() { return <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" /></svg>; }
