@@ -119,10 +119,6 @@ export default function HomePage() {
     setResultUrl(null); setError(null); setQuotaError(null);
   };
 
-  const handlePricingSelect = (plan: PricingPlan) => {
-    if (plan.price > 0) alert(`${plan.name} — creem.io checkout in production.`);
-  };
-
   return (
     <div className="flex flex-col">
       {/* Hero + Upload */}
@@ -265,7 +261,7 @@ export default function HomePage() {
             <p className="text-muted-foreground max-w-xl mx-auto">Credits by upscale: 2x=1, 3x=2, 4x=5</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            {PRICING_PLANS.map((plan) => (<PricingCard key={plan.id} plan={plan} current={false} onSelect={handlePricingSelect} />))}
+            {PRICING_PLANS.map((plan) => (<PricingCard key={plan.id} plan={plan} current={false} />))}
           </div>
           <div className="text-center mb-12">
             <h3 className="text-lg font-semibold mb-4">One-Time Credit Packs</h3>
