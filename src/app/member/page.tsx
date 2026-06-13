@@ -1,4 +1,5 @@
-import { auth, signOut } from "@/lib/auth";
+import { auth } from "@/lib/auth";
+import { SignOutBtn } from "@/components/member/SignOutBtn";
 import { redirect } from "next/navigation";
 import { db, users, upscaleJobs } from "@/lib/db";
 import { initDB } from "@/lib/db/init";
@@ -59,9 +60,7 @@ export default async function MemberPage() {
           </div>
           <div className="flex gap-3">
             <Link href="/"><Button variant="outline" className="rounded-xl">Home</Button></Link>
-            <form action={async () => { "use server"; await signOut({ redirectTo: "/" }); }}>
-              <Button variant="ghost" className="rounded-xl">Sign Out</Button>
-            </form>
+            <SignOutBtn />
           </div>
         </div>
 
