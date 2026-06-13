@@ -29,39 +29,80 @@ export async function POST(request: NextRequest) {
       };
     };
 
-    // Handle checkout completed
-    if (event.type === "checkout.completed" && event.data?.object?.customer?.email) {
-      const email = event.data.object.customer.email;
-      const productId = event.data.object.product_id;
+    const email = event.data?.object?.customer?.email;
+    if (!email) {
+      return NextResponse.json({ received: true });
+    }
 
-      if (productId && PRODUCT_MAP[productId]) {
-        const product = PRODUCT_MAP[productId];
+    // Find user
+    const existing = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    if (existing.length === 0) {
+      console.warn(`[Creem] User not found: ${email}`);
+      return NextResponse.json({ received: true });
+    }
+    const userId = existing[0].id;
 
-        // Find user by email and update plan + credits
-        const existing = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    switch (event.type) {
+      case "checkout.completed": {
+        // New purchase — upgrade plan or add credits
+        const productId = event.data?.object?.product_id;
+        const product = productId ? PRODUCT_MAP[productId] : null;
+        if (!product) break;
 
-        if (existing.length > 0) {
-          const userId = existing[0].id;
-
-          if (product.plan !== "free") {
-            // Subscription plan
-            await db.update(users).set({
-              plan: product.plan,
-              monthlyCredits: product.credits,
-              creditsUsed: 0,
-            }).where(eq(users.id, userId));
-          } else {
-            // Credit pack — add to existing credits
-            const currentTotal = existing[0].monthlyCredits || 5;
-            await db.update(users).set({
-              monthlyCredits: currentTotal + product.credits,
-            }).where(eq(users.id, userId));
-          }
-
-          console.log(`[Creem] Updated user ${email}: plan=${product.plan}, +${product.credits} credits`);
+        if (product.plan !== "free") {
+          await db.update(users).set({
+            plan: product.plan,
+            monthlyCredits: product.credits,
+            creditsUsed: 0,
+          }).where(eq(users.id, userId));
         } else {
-          console.warn(`[Creem] User not found: ${email}`);
+          const currentTotal = existing[0].monthlyCredits || 5;
+          await db.update(users).set({
+            monthlyCredits: currentTotal + product.credits,
+          }).where(eq(users.id, userId));
         }
+        console.log(`[Creem] ${email}: checkout → plan=${product.plan}, +${product.credits} credits`);
+        break;
+      }
+
+      case "subscription.active": {
+        const productId = event.data?.object?.product_id;
+        const product = productId ? PRODUCT_MAP[productId] : null;
+        if (product) {
+          await db.update(users).set({
+            plan: product.plan,
+            monthlyCredits: product.credits,
+            creditsUsed: 0,
+          }).where(eq(users.id, userId));
+          console.log(`[Creem] ${email}: subscription active → ${product.plan}`);
+        }
+        break;
+      }
+
+      case "subscription.canceled":
+      case "subscription.expired": {
+        // Downgrade to free
+        await db.update(users).set({
+          plan: "free",
+          monthlyCredits: 5,
+          creditsUsed: 0,
+        }).where(eq(users.id, userId));
+        console.log(`[Creem] ${email}: subscription ended → free`);
+        break;
+      }
+
+      case "refund.created": {
+        // Remove credits from refunded purchase
+        const refundProductId = event.data?.object?.product_id;
+        const refundProduct = refundProductId ? PRODUCT_MAP[refundProductId] : null;
+        if (refundProduct) {
+          const current = existing[0].monthlyCredits || 5;
+          await db.update(users).set({
+            monthlyCredits: Math.max(5, current - refundProduct.credits),
+          }).where(eq(users.id, userId));
+          console.log(`[Creem] ${email}: refund → -${refundProduct.credits} credits`);
+        }
+        break;
       }
     }
 
