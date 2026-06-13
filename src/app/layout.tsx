@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   title: "Free AI Image Upscaler — Enhance Photos Online",
   description:
     "Free AI image upscaler. Enlarge and enhance your photos by 2x, 3x, or 4x. No credit card needed. 5 free credits every month.",
+  verification: {
+    google: "xg87fsiG4WMncB75dIQNVXHn5pOUYmWp1kxp3iijt6Q",
+  },
   keywords: [
     "image upscaler",
     "AI image enhancement",
